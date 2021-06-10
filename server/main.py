@@ -20,7 +20,7 @@ arr = [[
 ]]
 
 arr1 = []
-for x in range(10):
+for x in range(1):
     arr1.append('卧槽我听不懂你在说啥！')
     arr1.append('FUUUUUCCCCCCKKKKKKKK!')
 
