@@ -20,7 +20,7 @@ arr = [[
 ]]
 
 arr1 = []
-for x in len(5):
+for x in range(len(5)):
     arr1.append('卧槽我听不懂你在说啥！')
 
 for x in arr:
