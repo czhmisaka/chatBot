@@ -10,7 +10,7 @@ from chatBot import chatBot
 app = FastAPI()
 
 bot1 = chatBot({'read_only': False})
-# bot1.trainerNormal()
+bot1.trainerNormal()
 
 arr = [[
     '你是谁',
@@ -22,7 +22,9 @@ arr = [[
 arr1 = []
 for x in range(10):
     arr1.append('卧槽我听不懂你在说啥！')
+    arr1.append('FUUUUUCCCCCCKKKKKKKK!')
 
+bot1.trainerByList(arr1)
 for x in arr:
     bot1.trainerByList(x)
 
