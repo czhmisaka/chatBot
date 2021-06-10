@@ -32,7 +32,8 @@ for x in arr:
 @app.get("/api/bot/{word}")
 async def root(word):
     t = time.time()
-    back = JSONResponse(bot1.getResponse(word).text)
-    print(word,back)
+    text = bot1.getResponse(word).text
+    back = JSONResponse(text)
+    print(word,text)
     print(time.time()-t)
     return back
