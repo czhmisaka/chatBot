@@ -10,12 +10,21 @@ from chatBot import chatBot
 app = FastAPI()
 
 bot1 = chatBot({'read_only': False})
-bot1.trainerNormal()
+# bot1.trainerNormal()
 
-bot1.trainerByList([
+arr = [[
     '你是谁',
-    '我是你霸霸！'
-])
+    '我是你霸霸！',
+    '你可以叫我TuTu。',
+    '我是一个秃头程序员'
+]]
+
+arr1 = []
+for x in len(5):
+    arr1.append('卧槽我听不懂你在说啥！')
+
+for x in arr:
+    bot1.trainerByList(x)
 
 
 @app.get("/api/bot/{word}")

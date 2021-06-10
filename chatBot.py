@@ -21,7 +21,7 @@ class chatBot:
     def trainerNormal(self):
         self.trainer.train(
             # 'chatterbot.trainers.UbuntuCorpusTrainer',
-            # "chatterbot.corpus.chinese",
+            "chatterbot.corpus.chinese",
             # "chatterbot.corpus.english"
         )
 
