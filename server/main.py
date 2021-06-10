@@ -33,5 +33,6 @@ for x in arr:
 async def root(word):
     t = time.time()
     back = JSONResponse(bot1.getResponse(word).text)
+    print(word,back)
     print(time.time()-t)
     return back
