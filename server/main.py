@@ -1,6 +1,8 @@
 from fastapi import FastAPI
 import sys
 import time
+from downtool import downtool as down
+
 
 from starlette.responses import JSONResponse
 sys.path.append("..")
@@ -12,30 +14,7 @@ app = FastAPI()
 bot1 = chatBot({'read_only': False})
 bot1.trainerNormal()
 
-arr = [[
-    '你是谁',
-    '我是你霸霸！',
-    '你可以叫我TuTu。',
-    '我是一个秃头程序员'
-],[
-    '你爸爸是谁',
-    '陈之罕',
-    '你霸霸是谁',
-    '陈之罕',
-    '霸霸是谁',
-    '陈之罕',
-]]
-
-arr1 = []
-for x in range(1):
-    arr1.append('卧槽我听不懂你在说啥！')
-    arr1.append('FUUUUUCCCCCCKKKKKKKK!')
-
-bot1.trainerByList(arr1)
-for x in arr:
-    bot1.trainerByList(x)
-
-
+# 标准回答
 @app.get("/api/bot/{word}")
 async def root(word):
     t = time.time()
@@ -44,3 +23,8 @@ async def root(word):
     print(word,text)
     print(time.time()-t)
     return back
+
+# 添加下载任务
+@app.get("/api/download/{word}")
+async def download(word):
+    pass
