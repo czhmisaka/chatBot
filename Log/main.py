@@ -54,7 +54,7 @@ class LogStorageMain:
     def __serverProcess(self):
         pass
 
-    # 启动心跳服务查看节点状态 
+    # 启动心跳服务查看节点状态
     def __beatCheckProcess(self):
         pass
 
@@ -62,25 +62,28 @@ class LogStorageMain:
     def getTraceId(self, root='logStorage', module=''):
         pass
 
-    # 默认创建监听列表
+    # 默认创建/刷新节点列表
     def initModuleList(self):
         pass
 
-    # 添加一个监听节点
-    def addNode(self, appList):
+    # 添加一个节点
+    def addNode(self, nodeInfo):
         pass
 
-    # 移除一个监听节点
-    def removeNode(self, moduleName):
+    # 移除一个节点
+    def removeNode(self, nodeName, nodeId):
         pass
 
 
+'''
+节点
+'''
 class LogStorageNode:
     def __init__(self, mainServerName='root', nodeName='node', port='8020'):
         ''' 初始参数
             mainServerName      : 主机名
             nodeName            : 当前节点名称
-            port                : 默认启动端口
+            port                : 启动端口
         初始参数'''
         self.mainServerName = mainServerName
         self.nodeName = nodeName
@@ -106,12 +109,11 @@ class LogStorageNode:
         return IPConfig
 
 
-
 class NodeStatus(Enum):
-    ReadyForLink = 0# 节点上线，等待配置连接中
-    Linking = 1     # 链接中
-    Missing = 2     # 链接丢失
-    ReLink = 3      # 尝试重新链接
-    NotFound = 4    # 未找到对应节点or对节点的访问被拒绝
-    OnLine = 10     # 节点在线
-    OffLine = 20    # 节点离线or已登记的节点日志服务关闭
+    ReadyForLink = 0  # 节点上线，等待配置连接中
+    Linking = 1  # 链接中
+    Missing = 2  # 链接丢失
+    ReLink = 3  # 尝试重新链接
+    NotFound = 4  # 未找到对应节点or对节点的访问被拒绝
+    OnLine = 10  # 节点在线
+    OffLine = 20  # 节点离线or已登记的节点日志服务关闭

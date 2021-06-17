@@ -4,7 +4,7 @@ import time
 from enum import Enum, unique
 import os
 import path
-from .main import LogStorageNode
+from Log import *
 
 '''
 czh家庭服务器的日志模块
