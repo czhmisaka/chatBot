@@ -1,4 +1,4 @@
-from Log import node
+from Log import node, Util
 import sqlite3 as sq
 import time
 from enum import Enum, unique
@@ -6,6 +6,18 @@ import os
 import path
 import socket
 from inspect import isfunction
+
+# 节点信息模板
+nodeInfoTemplate = {
+    'nodeId': '节点ID',
+    'nodeName': '节点名称',
+    'nodeIP': '节点IP',
+    'nodePort': '节点端口',
+    'mainServerName': '主机名称',
+    'mainServerIP': '主机IP',
+    'mainServerPort': '主机端口',
+    'tick': "访问间隔"
+}
 '''
 czh家庭服务器的日志模块
 主机
@@ -23,27 +35,21 @@ class LogStorageMain:
             status              : 日志模块服务状态
             tickRange           : txt日志文件分时保存
             cmdShow             : 控制台输出
-            nodeList          : 节点列表
-        初始参数'''
+            nodeMap             : 节点 - 
+            logMap              : 日志服务 -
+            nodeTemplate        : 节点数据模板
+            mainServerName      : 主服务器名
+        '''
         self.port = port
         self.storageName = storageName
         self.status = 'init'
-        self.tickRange = 10 * 60
+        self.tickRange = 24 * 60 * 60
         self.cmdShow = False
-        self.nodeList = []
+        self.nodeMap = {}
+        self.logMap = {}
+        self.nodeTemplate = nodeInfoTemplate
         self.mainServerName = mainServerName
-        pass
-
-    # 正常日志
-    def log(self):
-        pass
-
-    # 错误日志
-    def err(self):
-        pass
-
-    # 警告日志
-    def warn(self):
+        self.mainLog = Util(path='test', mainServerName=mainServerName)
         pass
 
     # 启动日志模块守护线程
@@ -58,8 +64,35 @@ class LogStorageMain:
     def __beatCheckProcess(self):
         pass
 
+    # 通过节点ID获取对应节点操作类
+    def getLogClassByNodeId(self, nodeId):
+        if nodeId in self.logMap:
+            return self.logMap[nodeId]
+        return self.mainLog
+
+    # 通过节点名称获取对应节点操作类
+    def getLogClassByNodeName(self, nodeName):
+        if nodeName in self.nodeMap:
+            nodeId = self.nodeMap[nodeName]['nodeId']
+            return self.getLogClassByNodeId(nodeId)
+        else:
+            return False
+
+    # 使用节点名称获取节点ID
+    def __getNodeIdByName(self, nodeName=''):
+        if nodeName != '':
+            id = hash(nodeName)
+            while True:
+                if id in self.logList:
+                    id = id + 1
+                else:
+                    return id
+
+        else:
+            return ''
+
     # 获取traceID
-    def getTraceId(self, root='logStorage', module=''):
+    def getTraceId(self, nodeName=''):
         pass
 
     # 默认创建/刷新节点列表
@@ -68,7 +101,25 @@ class LogStorageMain:
 
     # 添加一个节点
     def addNode(self, nodeInfo):
-        pass
+        nodeId = self.__getNodeIdByName(nodeInfo["nodeId"])
+        if nodeId == '':
+            return False
+        lp = Util(path='test',
+                  mainServerName=nodeInfo["mainServerName"],
+                  nodeServerName=nodeInfo["nodeName"])
+        self.logMap[nodeId] = lp
+        node = {
+            'nodeId': nodeId,
+            'nodeName': nodeInfo["nodeName"],
+            'nodeIP': nodeInfo["nodeIP"],
+            'nodePort': nodeInfo["nodePort"],
+            'mainServerName': nodeInfo["mainServerName"],
+            'mainServerIP': nodeInfo["mainServerIP"],
+            'mainServerPort': nodeInfo["mainServerPort"],
+            'tick': nodeInfo["tick"]
+        }
+        self.nodeMap[nodeInfo["nodeName"]] = node
+        return True
 
     # 移除一个节点
     def removeNode(self, nodeName, nodeId):
@@ -78,6 +129,8 @@ class LogStorageMain:
 '''
 节点
 '''
+
+
 class LogStorageNode:
     def __init__(self, mainServerName='root', nodeName='node', port='8020'):
         ''' 初始参数

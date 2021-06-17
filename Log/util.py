@@ -38,9 +38,17 @@ class Util():
         pass
 
     # 添加一条新的记录
-    def addNewRecord(self, data, type='info'):
+    def addNewRecordInTxtStorage(self, data, type='info'):
         try:
-           self.lp.info(data)
+            data = str(data)
+            if type == 'info':
+                self.lp.info(data)
+            elif type == 'err':
+                self.lp.err(data)
+            elif type == 'warn':
+                self.lp.warn(data)
+            else:
+                self.lp.info(data)
         except:
             self.lp.err("AddNewRecode Error")
         return True
