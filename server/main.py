@@ -7,6 +7,7 @@ from downtool import downtool as down
 from starlette.responses import JSONResponse
 sys.path.append("..")
 from chatBot import chatBot
+from Log import LogServerNode,logPrint as lp
 
 # uvicorn main:app --reload
 app = FastAPI()

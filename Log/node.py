@@ -4,12 +4,14 @@ import time
 from enum import Enum, unique
 import os
 import path
+from .main import LogStorageNode
 
 '''
 czh家庭服务器的日志模块
-从机
+分布式节点从机
 '''
-class LogServerNode:
+
+class NodeLogServer:
     def __init__(self, StorageName="LogStorage"):
         ''' 初始参数
             sqlStorageName      : 数据库保存名称 
@@ -17,7 +19,7 @@ class LogServerNode:
             status              : 日志模块服务状态
             tickRange           : txt日志文件分时保存
         初始参数'''
-
+        LogStorageNode.__init__(self)
         self.sqlStorageName = StorageName
         self.txtStorageName = StorageName
         self.status = 'init'
