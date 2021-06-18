@@ -1,4 +1,4 @@
-from Log import node, Util
+from Log import mainServer, node, Util
 import sqlite3 as sq
 import time
 from enum import Enum, unique
@@ -17,6 +17,15 @@ nodeInfoTemplate = {
     'mainServerIP': '主机IP',
     'mainServerPort': '主机端口',
     'tick': "访问间隔"
+}
+
+# 节点traceIdBlock模板
+traceIdBlockTemplate = {
+    'blockSize': '区块大小',
+    'nodeId': '分配的节点ID',
+    'start': '区块起点',
+    'mainServer': '主机名称',
+    'mainServerId': '主服务器Id'
 }
 '''
 czh家庭服务器的日志模块
@@ -39,6 +48,8 @@ class LogStorageMain:
             logMap              : 日志服务 -
             nodeTemplate        : 节点数据模板
             mainServerName      : 主服务器名
+            mainLog             : 主服务器日志
+            traceMap            : traceId区块管理map
         '''
         self.port = port
         self.storageName = storageName
@@ -50,6 +61,9 @@ class LogStorageMain:
         self.nodeTemplate = nodeInfoTemplate
         self.mainServerName = mainServerName
         self.mainLog = Util(path='test', mainServerName=mainServerName)
+        self.traceIdBlockMap = {}
+        self.traceIdBlockSize = 10 * 1000
+        self.traceIdBlockTemplate = traceIdBlockTemplate
         pass
 
     # 启动日志模块守护线程
@@ -63,6 +77,13 @@ class LogStorageMain:
     # 启动心跳服务查看节点状态
     def __beatCheckProcess(self):
         pass
+
+    # 通过节点ID获取保存在主机的节点信息
+    def getNodeInfoByNodeId(self, nodeId):
+        for x in self.nodeMap:
+            if self.nodeMap[x]['nodeId'] == nodeId:
+                return self.nodeMap[x]
+        return False
 
     # 通过节点ID获取对应节点操作类
     def getLogClassByNodeId(self, nodeId):
@@ -91,11 +112,12 @@ class LogStorageMain:
         else:
             return ''
 
-    # 获取traceID
-    def getTraceId(self, nodeName=''):
+    # 获取traceID_Block(traceId 区块)
+    def getTraceId(self, nodeName):
+        
         pass
 
-    # 默认创建/刷新节点列表
+    # 默认创建/刷新节点列表 - 好像暂时不需要这个了
     def initModuleList(self):
         pass
 
@@ -121,8 +143,10 @@ class LogStorageMain:
         self.nodeMap[nodeInfo["nodeName"]] = node
         return True
 
-    # 移除一个节点
+    # 移除一个节点信息
+    # 此处仍然会保留nodeId防止日志混写，但需要在Util中注销写入日志的服务
     def removeNode(self, nodeName, nodeId):
+
         pass
 
 

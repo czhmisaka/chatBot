@@ -16,6 +16,7 @@ from Log import *
 app = FastAPI()
 bot1 = chatBot({'read_only': False})
 
+
 # 标准回答
 @app.get("/api/bot/{word}")
 async def root(word):
