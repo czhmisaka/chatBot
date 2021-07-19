@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 import sys
 import time
-from downtool import downtool as down
+import downtool as down
 import os
 import uvicorn
 
@@ -10,7 +10,7 @@ sys.path.append("../")
 from chatBot import chatBot
 # sys.path.append("Log/")
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-from Log import *
+
 
 # uvicorn main:app --reload
 app = FastAPI()
@@ -25,10 +25,10 @@ async def root(word):
     back = JSONResponse(text)
     return back
 
-
 # 添加下载任务
 @app.get("/api/download/{word}")
 async def download(word):
+    t = time.time()
     pass
 
 

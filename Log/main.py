@@ -5,7 +5,7 @@ from enum import Enum, unique
 import os
 import path
 import socket
-from inspect import isfunction
+from inspect import BlockFinder, isfunction
 
 # 节点信息模板
 nodeInfoTemplate = {
@@ -25,7 +25,7 @@ traceIdBlockTemplate = {
     'nodeId': '分配的节点ID',
     'start': '区块起点',
     'mainServer': '主机名称',
-    'mainServerId': '主服务器Id'
+    'mainServerPort': '主服务器端口'
 }
 '''
 czh家庭服务器的日志模块
@@ -49,7 +49,10 @@ class LogStorageMain:
             nodeTemplate        : 节点数据模板
             mainServerName      : 主服务器名
             mainLog             : 主服务器日志
-            traceMap            : traceId区块管理map
+            traceIDBlockMap     : traceID区块管理map
+            traceIDBlockSign    : traceID区块ID
+            traceIDBlockSize    : traceID区块大小
+            traceIDBlockTemplate: traceID区块模板
         '''
         self.port = port
         self.storageName = storageName
@@ -61,9 +64,10 @@ class LogStorageMain:
         self.nodeTemplate = nodeInfoTemplate
         self.mainServerName = mainServerName
         self.mainLog = Util(path='test', mainServerName=mainServerName)
-        self.traceIdBlockMap = {}
-        self.traceIdBlockSize = 10 * 1000
-        self.traceIdBlockTemplate = traceIdBlockTemplate
+        self.traceIDBlockMap = {}
+        self.traceIDBlockSign = 0
+        self.traceIDBlockSize = 10 * 1000
+        self.traceIDBlockTemplate = traceIdBlockTemplate
         pass
 
     # 启动日志模块守护线程
@@ -113,9 +117,26 @@ class LogStorageMain:
             return ''
 
     # 获取traceID_Block(traceId 区块)
-    def getTraceId(self, nodeName):
-        
-        pass
+    def getTraceIdBlock(self, nodeName):
+        nodeInfo = self.getNodeInfoByNodeId(self.__getNodeIdByName(nodeName))
+        if nodeInfo is False:
+            return False
+        traceIdBlock = self.traceIDBlockTemplate
+        traceIdBlock.blockSize = self.traceIDBlockSize
+        traceIdBlock.nodeId = nodeInfo.nodeId
+        traceIdBlock.start = self.traceIDBlockSign
+        traceIdBlock.mainServer = self.mainServerName
+        traceIdBlock.mainServerPort = self.port
+        if not self.traceIDBlockMap[nodeInfo.nodeId]:
+            self.traceIDBlockMap[nodeInfo.nodeId] = []
+        self.traceIDBlockMap[nodeInfo.nodeId].append({
+            'min':
+            self.traceIDBlockSign,
+            'max':
+            self.traceIDBlockSize + self.traceIDBlockSign
+        })
+        self.traceIDBlockSign = self.traceIDBlockSign + self.traceIDBlockSize
+        return traceIdBlock
 
     # 默认创建/刷新节点列表 - 好像暂时不需要这个了
     def initModuleList(self):
@@ -126,6 +147,7 @@ class LogStorageMain:
         nodeId = self.__getNodeIdByName(nodeInfo["nodeId"])
         if nodeId == '':
             return False
+        nodeInfo["mainServerName"] = self.mainServerName
         lp = Util(path='test',
                   mainServerName=nodeInfo["mainServerName"],
                   nodeServerName=nodeInfo["nodeName"])
@@ -138,7 +160,7 @@ class LogStorageMain:
             'mainServerName': nodeInfo["mainServerName"],
             'mainServerIP': nodeInfo["mainServerIP"],
             'mainServerPort': nodeInfo["mainServerPort"],
-            'tick': nodeInfo["tick"]
+            'tick': nodeInfo["tick"],
         }
         self.nodeMap[nodeInfo["nodeName"]] = node
         return True
@@ -173,6 +195,10 @@ class LogStorageNode:
         for x in self:
             if not isfunction(x):
                 config[x] = self[x]
+
+    # 从分配的区块中取出一个id
+    def getTraceId(self):
+        pass
 
     # 获取ip配置
     def __getIPConifg(self):
